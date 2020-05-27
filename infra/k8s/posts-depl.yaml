@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: posts
+  template:
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts
+          image: fgoto/posts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-clusterip-svc
+spec:
+  # default =  type: ClusterIP
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      # port exposed by the service in the cluster
+      port: 4000
+      # port inside the container
+      targetPort: 4000

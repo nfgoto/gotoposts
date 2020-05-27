@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-svc
+  annotations:
+    # this annotations helps the ingress recognizes the rules in this config
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: posts.com
+      http:
+        paths:
+          - path: /posts/create
+            backend:
+              serviceName: posts-clusterip-svc
+              servicePort: 4000
+          - path: /posts
+            backend:
+              serviceName: query-clusterip-svc
+              servicePort: 4002
+          - path: /posts/?(.*)/comments
+            backend:
+              serviceName: comments-clusterip-svc
+              servicePort: 4001
+          - path: /?(.*)
+            backend:
+              serviceName: client-clusterip-svc
+              servicePort: 3000

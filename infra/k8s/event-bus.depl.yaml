@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-bus-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-bus
+  template:
+    metadata:
+      labels:
+        app: event-bus
+    spec:
+      containers:
+        - name: event-bus
+          image: fgoto/event-bus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-bus-clusterip-svc
+spec:
+  # default =  type: ClusterIP
+  selector:
+    app: event-bus
+  ports:
+    - name: event-bus
+      protocol: TCP
+      # port exposed by the service in the cluster
+      port: 4005
+      # port inside the container
+      targetPort: 4005

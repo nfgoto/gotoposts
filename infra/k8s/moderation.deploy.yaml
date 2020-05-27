@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moderation
+  template:
+    metadata:
+      labels:
+        app: moderation
+    spec:
+      containers:
+        - name: moderation
+          image: fgoto/moderation
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moderation-clusterip-svc
+spec:
+  # default =  type: ClusterIP
+  selector:
+    app: moderation
+  ports:
+    - name: moderation
+      protocol: TCP
+      # port exposed by the service in the cluster
+      port: 4003
+      # port inside the container
+      targetPort: 4003

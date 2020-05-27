@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comments
+  template:
+    metadata:
+      labels:
+        app: comments
+    spec:
+      containers:
+        - name: comments
+          image: fgoto/comments
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments-clusterip-svc
+spec:
+  # default =  type: ClusterIP
+  selector:
+    app: comments
+  ports:
+    - name: comments
+      protocol: TCP
+      # port exposed by the service in the cluster
+      port: 4001
+      # port inside the container
+      targetPort: 4001

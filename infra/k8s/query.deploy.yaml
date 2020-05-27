@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query
+  template:
+    metadata:
+      labels:
+        app: query
+    spec:
+      containers:
+        - name: query
+          image: fgoto/query
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-clusterip-svc
+spec:
+  # default =  type: ClusterIP
+  selector:
+    app: query
+  ports:
+    - name: query
+      protocol: TCP
+      # port exposed by the service in the cluster
+      port: 4002
+      # port inside the container
+      targetPort: 4002
